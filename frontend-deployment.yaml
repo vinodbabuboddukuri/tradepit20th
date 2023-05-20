@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+spec:
+  replicas: 3 # number of replicas for the deployment
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: sasikirannallapu/kltrades:latest # replace with your image details
+          ports:
+            - containerPort: 443 # expose port 443 for https
+          livenessProbe:
+            httpGet:
+              path: / # check if the root endpoint is accessible
+              port: 443
+            initialDelaySeconds: 30 # wait 30 seconds before checking
+            periodSeconds: 10 # check every 10 seconds
+          readinessProbe:
+            httpGet:
+              path: / # check if the root endpoint is accessible
+              port: 443
+            initialDelaySeconds: 10 # wait 10 seconds before checking
+            periodSeconds: 5 # check every 5 seconds
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+            - name: static-files
+              mountPath: /usr/share/nginx/html
+      volumes:
+        - name: config-volume
+          configMap:
+            name: nginx-config
+        - name: static-files
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+spec:
+  type: LoadBalancer # expose the service to the internet
+  selector:
+    app: frontend
+  ports:
+    - name: https
+      port: 443
+      targetPort: 443
