@@ -6,9 +6,8 @@ const LandingPage = () => (
   <div className="landing-page">
     <LandingMenu name="LOGIN" url="/login" name2="REGISTER" url2="/register" />
     <div className="landing-page__heading">
-    <h1>Learn Great </h1><br></br>
-    <h1> Invest Great</h1><br></br>
-    <h1>Grow Great</h1>
+    <h1>Learn Great Invest Great Grow Great </h1><br></br>
+ 
       <img src={require("../../images/pngegg (2).png")} alt="preview" />
     </div>
     <div className="landing-page__background">
